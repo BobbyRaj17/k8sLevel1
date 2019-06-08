@@ -1,0 +1,15 @@
+---
+# Creating namespace with name staging
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging
+
+---
+# Creating namespace with name production
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+
+
