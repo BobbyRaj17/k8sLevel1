@@ -1,9 +1,6 @@
 # k8sLevel1
 Kubernetes setup &amp; Automation - Level 1
 
-#Tasks
-> Create kubernetes cluster on gcp
-
 ## Prerequisites
 Your system needs the `gcloud setup` ,`helm` & `terraform`:
 - [gcloud setup ](https://cloud.google.com/community/tutorials/getting-started-on-gcp-with-terraform)
