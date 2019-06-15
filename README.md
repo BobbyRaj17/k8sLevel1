@@ -14,7 +14,7 @@ Your system needs the `gcloud setup` ,`helm` & `terraform`:
 - [helm installation](https://helm.sh/docs/using_helm/)
 - [gcloud container clusters get-credentials](https://cloud.google.com/sdk/gcloud/reference/container/clusters/get-credentials)
 
-###1. Steps to create Kubernetes cluster on GCP
+### 1. Steps to create Kubernetes cluster on GCP
 Considering gcloud setup is done as mentioned in prerequisite, we can spin up the cluster using gcloud cli
 
 ```bash
@@ -34,7 +34,7 @@ clone the repository - git clone https://github.com/BobbyRaj17/k8sLevel1.git
  Please specify the project name under `gke/main.tf` & `gke/variables.tf` by default `bobtestproject` is provided
  similarly also select the appropriate zone, region, credentials & machine type in the above mentioned file that suits your requirement
  
- ###2.  install nginx ingress controller on the cluster
+ ### 2. install nginx ingress controller on the cluster
  
  we can leverage the helm for this as helm make it very easy and couple of commands to setup `nginx ingress controller` 
  
@@ -76,7 +76,7 @@ clone the repository - git clone https://github.com/BobbyRaj17/k8sLevel1.git
  * /healthz that returns 200
  * / that returns 404
  
-###3. create namespaces staging & production
+### 3. create namespaces staging & production
  
  once the `gcloud container clusters get-credentials` setup is completed as mentioned in prerequisite we can use `kubectl` command to create k8s resources
  Using the kubectl &  `namespace-creation.yaml` available in the root directory of the repo we can create multiple namespaces.
@@ -90,7 +90,7 @@ clone the repository - git clone https://github.com/BobbyRaj17/k8sLevel1.git
   namespace "production" created
  ``` 
   
- ###4. install `guest-book` application on both the namespaces 
+ ### 4. install `guest-book` application on both the namespaces 
  
  The config files for this is available in kubernetes repo -> https://github.com/kubernetes/kubernetes/tree/release-1.10/examples/guestbook
  
@@ -116,17 +116,17 @@ clone the repository - git clone https://github.com/BobbyRaj17/k8sLevel1.git
 ```
   Helm charts are also avilable for guestbook application easily in github or we can create one for the above code which will simplify the above deployment
 
-###5. Expose staging application on hostname staging-guestbook.mstakx.io
+### 5. Expose staging application on hostname staging-guestbook.mstakx.io
 ```bash
     kubectl create -f guestbook/ingress-staging.yaml -n staging
 ```
  
-###6. Expose production application on hostname guestbook.mstakx.io
+### 6. Expose production application on hostname guestbook.mstakx.io
 ```bash
     kubectl create -f guestbook/ingress-production.yaml -n production
 ```
  
-###7 & 8. Script to demonstrate pods scaling up & down 
+### 7 & 8. Script to demonstrate pods scaling up & down 
 
 Create `Horizontal pod auto-scaler` using `kubectl`
 
@@ -146,7 +146,7 @@ please refer the `PENDING` page for more detail reg. load testing and Horizontal
 Note: If you are also seeing <unknown> here, then this means that the resource limits are not set.
 In such a scenario, the HPA won't work. Even if the CPU Utilization goes above threshold or more, new pods will not be created. To fix this we need to set the resource requests.
 
-###9. write a wrapper script 
+### 9. write a wrapper script 
 ```bash
     sh wrapper_script.sh
 ```
