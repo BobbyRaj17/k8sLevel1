@@ -30,13 +30,13 @@ clone the repository - git clone https://github.com/BobbyRaj17/k8sLevel1.git
   terraform apply plan
   ```
   
- #### Notes
- Please specify the project name under `gke/main.tf` & `gke/variables.tf` by default `bobtestproject` is provided
+
+ > NOTE: Please specify the project name under `gke/main.tf` & `gke/variables.tf` by default `bobtestproject` is provided
  similarly also select the appropriate zone, region, credentials & machine type in the above mentioned file that suits your requirement
  
  ### 2. install nginx ingress controller on the cluster
  
- we can leverage the helm for this as helm make it very easy and couple of commands to setup `nginx ingress controller` 
+ we can leverage helm for installing Nginx ingress controller and it only takes couple of commands to setup `nginx ingress controller` 
  
  If your Kubernetes cluster has RBAC enabled, from the Cloud Shell, deploy an NGINX controller Deployment and Service by running the following command:
  ```bash
@@ -58,55 +58,26 @@ clone the repository - git clone https://github.com/BobbyRaj17/k8sLevel1.git
   nginx-ingress-default-backend  ClusterIP     10.7.245.75   none         80/TCP                      1s
   
  ```
- Wait a few moments while the GCP L4 Load Balancer gets deployed. Confirm that the nginx-ingress-controller Service has been deployed and that you have an external IP address associated with the service. Run the following command:
- 
- ```bash
-  kubectl get service nginx-ingress-controller
-  ```
- 
- You should see the following:
- 
- ```bash
-  NAME                       TYPE           CLUSTER-IP     EXTERNAL-IP      PORT(S)                      AGE
-  nginx-ingress-controller   LoadBalancer   10.7.248.226   35.226.162.176   80:30890/TCP,443:30258/TCP   3m
-  ```
-  
- Notice the second service, nginx-ingress-default-backend. The default backend is a Service which handles all URL paths and hosts the NGINX controller doesn't understand (that is, all the requests that are not mapped with an Ingress Resource). The default backend exposes two URLs:
- 
- * /healthz that returns 200
- * / that returns 404
  
 ### 3. create namespaces staging & production
  
  once the `gcloud container clusters get-credentials` setup is completed as mentioned in prerequisite we can use `kubectl` command to create k8s resources
  Using the kubectl &  `namespace-creation.yaml` available in the root directory of the repo we can create multiple namespaces.
-  ```bash
-  kube create -f namespace-creation.yaml
-  ```
- You should see the following:
-  
- ```
-  namespace "staging" created
-  namespace "production" created
- ``` 
+```bash
+    kube create -f namespace-creation.yaml
+```
   
  ### 4. install `guest-book` application on both the namespaces 
  
- The config files for this is available in kubernetes repo -> https://github.com/kubernetes/kubernetes/tree/release-1.10/examples/guestbook
+ The config files for this are available in kubernetes repo -> https://github.com/kubernetes/kubernetes/tree/release-1.10/examples/guestbook
  
  To deploy and run the guestbook application on GKE, we must:
- 1. Set up a Redis master
+ 1. Set up  Redis master
  2. Set up Redis workers
  3. Set up the guestbook web frontend
  
- Using the below command we can switch the namespaces between production and staging & can deploy the guestbook application to both the namespaces
-```bash
-    kubectl config set-context $(kubectl config current-context) --namespace=<insert-namespace-name-here>
-    # Validate it
-    kubectl config view | grep namespace:
-```
  Deployment steps using `kubectl`
- To create the Service, first, uncomment the following line in the frontend-service.yaml file:
+ In order to create the frontend Service with type Loadbalancer, uncomment the following line in the frontend-service.yaml file:
  `type: LoadBalancer`
 ```bash
     #Deployment guestbook on staging
@@ -135,18 +106,18 @@ Create `Horizontal pod auto-scaler` using `kubectl`
     kubectl create -f autoscale.yaml -n production
 ```
 
-The below script requires four argument & to produce some load on the service we will use, a tool called wrk
+The below script requires four arguments & to produce some load on the service we will use, a tool called wrk
 ```bash
     /loadTesting.sh <no of threads> <no of connection> <Total time> <url to test>
 ```
 
-e.g. ./loadTesting.sh "200" "200" "15m" "http://35.222.72.128:3000/"
+e.g. ./loadTesting.sh "200" "200" "15m" "http://35.239.75.46/"
 please refer the `PENDING` page for more detail reg. load testing and Horizontal pod autoscaler
  
 Note: If you are also seeing <unknown> here, then this means that the resource limits are not set.
 In such a scenario, the HPA won't work. Even if the CPU Utilization goes above threshold or more, new pods will not be created. To fix this we need to set the resource requests.
 
-### 9. write a wrapper script 
+### 9. write a wrapper script to automate all the above tasks 
 ```bash
     sh wrapper_script.sh
 ```
@@ -155,24 +126,24 @@ In such a scenario, the HPA won't work. Even if the CPU Utilization goes above t
 
 ```text
     Considering the task in hand of hosting guestbook application, I will choose a worker node having 1 cpu & 2 gb memory
-    combing all the pods resources i.e. 5 pods in total and each  taking 100m cpu & 100mi memory will still be within the limits
+    combing all the pods resources i.e. 5 pods in total and each taking 100m cpu & 100mi memory will still be within the limits
 ```
-> Note: if you are unsure about the workload then we can use autoscale cluster to save cost - [cluster autosacle](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-autoscaler)
+> Note: if you are unsure about the workload then we can use auto-scale cluster to save cost - [cluster auto-scale](https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-autoscaler)
 
 • What method was chosen to install the demo application and ingress controller on the cluster, justify the method used.
 
 ```text
-    I prefer helm to install the ingress as this is straight forward & also it take care of all the dependencies
+    I prefer helm to install the ingress as this is straight forward & it also take cares of all the dependencies.
 ```
 
 • What would be your chosen solution to monitor the application on the cluster and why?
 
 ```text
-    I prefer prometheus/grafana for monitoring & ELK for log aggregator and also would integrate the cluster with prometheus alert manager
+    I prefer Prometheus/Grafana for monitoring & ELK for log aggregator and  would also integrate the cluster with prometheus alert manager
 ```
 
 • What additional components / plugins would you install on the cluster to manage it better?
 
 ```text
-    I will setup  `cluster auto-scale` to manage node dynamically, `addon-resizer`  for vertically scaling  the dependent container up and down
+    I will setup  cluster auto-scale to manage node dynamically, addon-resizer  for vertically scaling  the dependent container up and down
 ```
