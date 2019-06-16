@@ -84,6 +84,8 @@ clone the repository - git clone https://github.com/BobbyRaj17/k8sLevel1.git
 ```
   Helm charts are also avilable for guestbook application easily in github or we can create one for the above code which will simplify the above deployment
 
+Note > Exposed the guestbook against a loadbalancer -> http://35.239.75.46/
+
 ### 5. Expose staging application on hostname staging-guestbook.mstakx.io
 ```bash
     kubectl create -f guestbook/ingress-staging.yaml -n staging
