@@ -109,7 +109,8 @@ The below script requires four arguments & to produce some load on the service w
 ```
 
 e.g. ./loadTesting.sh "200" "200" "15m" "http://35.239.75.46/"
-please refer the `PENDING` page for more detail reg. load testing and Horizontal pod autoscaler
+please refer the below screenshot for more detail reg. load testing and Horizontal pod autoscaler
+![Loadtesting](images/loadtesting.png) 
  
 Note: If you are also seeing <unknown> here, then this means that the resource limits are not set.
 In such a scenario, the HPA won't work. Even if the CPU Utilization goes above threshold or more, new pods will not be created. To fix this we need to set the resource requests.
